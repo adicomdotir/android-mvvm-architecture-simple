@@ -19,7 +19,7 @@ package ir.adicom.training.data.local.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 
-@Database(entities = [DataItemTypeTest::class], version = 1)
+@Database(entities = [DataItemType::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun dataItemTypeTestDao(): DataItemTypeTestDao
 }

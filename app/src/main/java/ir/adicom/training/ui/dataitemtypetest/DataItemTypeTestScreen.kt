@@ -16,14 +16,21 @@
 
 package ir.adicom.training.ui.dataitemtypetest
 
-import ir.adicom.training.ui.theme.MyApplicationTheme
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -31,31 +38,47 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ir.adicom.training.data.local.database.DataItemType
+
+const val TAG = "tag"
 
 @Composable
 fun DataItemTypeTestScreen(modifier: Modifier = Modifier, viewModel: DataItemTypeTestViewModel = hiltViewModel()) {
+    Log.e(TAG, "DataItemTypeTestScreen: ")
+
     val items by viewModel.uiState.collectAsStateWithLifecycle()
     if (items is DataItemTypeTestUiState.Success) {
         DataItemTypeTestScreen(
             items = (items as DataItemTypeTestUiState.Success).data,
             onSave = viewModel::addDataItemTypeTest,
-            modifier = modifier
+            modifier = modifier,
+            onDelete = viewModel::deleteItem
         )
+    }
+    if (items is DataItemTypeTestUiState.Error) {
+        Log.e(TAG, "DataItemTypeTestScreen: ${(items as DataItemTypeTestUiState.Error).throwable.message}")
+        Text(text = "Error")
+    }
+    if (items is DataItemTypeTestUiState.Loading) {
+        Text(text = "Loading")
     }
 }
 
 @Composable
 internal fun DataItemTypeTestScreen(
-    items: List<String>,
+    items: List<DataItemType>,
     onSave: (name: String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onDelete: (item: DataItemType) -> Unit
 ) {
-    Column(modifier) {
+    Log.e(TAG, "DataItemTypeTestScreen: ")
+    Column(modifier = modifier.fillMaxSize()) {
         var nameDataItemTypeTest by remember { mutableStateOf("Compose") }
         Row(
             modifier = Modifier
@@ -72,26 +95,42 @@ internal fun DataItemTypeTestScreen(
                 Text("Save")
             }
         }
-        items.forEach {
-            Text("Saved item: $it")
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            items(items) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Saved item: ${it.uid}.${it.name}")
+                    IconButton(onClick = {
+                        onDelete(it)
+                    }) {
+                        Icon(imageVector = Icons.Default.Delete, contentDescription = "delete_icons", tint = Color.Red)
+                    }
+                }
+            }
         }
     }
 }
 
 // Previews
 
-@Preview(showBackground = true)
-@Composable
-private fun DefaultPreview() {
-    MyApplicationTheme {
-        DataItemTypeTestScreen(listOf("Compose", "Room", "Kotlin"), onSave = {})
-    }
-}
-
-@Preview(showBackground = true, widthDp = 480)
-@Composable
-private fun PortraitPreview() {
-    MyApplicationTheme {
-        DataItemTypeTestScreen(listOf("Compose", "Room", "Kotlin"), onSave = {})
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun DefaultPreview() {
+//    MyApplicationTheme {
+//        DataItemTypeTestScreen(listOf("Compose", "Room", "Kotlin"), onSave = {})
+//    }
+//}
+//
+//@Preview(showBackground = true, widthDp = 480)
+//@Composable
+//private fun PortraitPreview() {
+//    MyApplicationTheme {
+//        DataItemTypeTestScreen(listOf("Compose", "Room", "Kotlin"), onSave = {})
+//    }
+//}

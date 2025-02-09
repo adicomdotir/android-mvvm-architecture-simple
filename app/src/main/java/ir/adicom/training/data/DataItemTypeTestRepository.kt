@@ -17,25 +17,29 @@
 package ir.adicom.training.data
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import ir.adicom.training.data.local.database.DataItemTypeTest
+import ir.adicom.training.data.local.database.DataItemType
 import ir.adicom.training.data.local.database.DataItemTypeTestDao
 import javax.inject.Inject
 
 interface DataItemTypeTestRepository {
-    val dataItemTypeTests: Flow<List<String>>
+    val dataItemTypeTests: Flow<List<DataItemType>>
 
     suspend fun add(name: String)
+    suspend fun delete(item: DataItemType)
 }
 
 class DefaultDataItemTypeTestRepository @Inject constructor(
     private val dataItemTypeTestDao: DataItemTypeTestDao
 ) : DataItemTypeTestRepository {
 
-    override val dataItemTypeTests: Flow<List<String>> =
-        dataItemTypeTestDao.getDataItemTypeTests().map { items -> items.map { it.name } }
+    override val dataItemTypeTests: Flow<List<DataItemType>> =
+        dataItemTypeTestDao.getDataItemTypeTests()
 
     override suspend fun add(name: String) {
-        dataItemTypeTestDao.insertDataItemTypeTest(DataItemTypeTest(name = name))
+        dataItemTypeTestDao.insertDataItemTypeTest(DataItemType(name = name))
+    }
+
+    override suspend fun delete(item: DataItemType) {
+        dataItemTypeTestDao.deleteItem(item)
     }
 }

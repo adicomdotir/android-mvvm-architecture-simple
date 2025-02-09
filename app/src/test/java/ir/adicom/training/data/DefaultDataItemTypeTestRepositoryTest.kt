@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import ir.adicom.training.data.local.database.DataItemTypeTest
+import ir.adicom.training.data.local.database.DataItemType
 import ir.adicom.training.data.local.database.DataItemTypeTestDao
 
 /**
@@ -45,13 +45,13 @@ class DefaultDataItemTypeTestRepositoryTest {
 
 private class FakeDataItemTypeTestDao : DataItemTypeTestDao {
 
-    private val data = mutableListOf<DataItemTypeTest>()
+    private val data = mutableListOf<DataItemType>()
 
-    override fun getDataItemTypeTests(): Flow<List<DataItemTypeTest>> = flow {
+    override fun getDataItemTypeTests(): Flow<List<DataItemType>> = flow {
         emit(data)
     }
 
-    override suspend fun insertDataItemTypeTest(item: DataItemTypeTest) {
+    override suspend fun insertDataItemTypeTest(item: DataItemType) {
         data.add(0, item)
     }
 }

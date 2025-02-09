@@ -17,14 +17,15 @@
 package ir.adicom.training.data.local.database
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
-@Entity
-data class DataItemTypeTest(
+@Entity(tableName = "dataitemtype")
+data class DataItemType(
     val name: String
 ) {
     @PrimaryKey(autoGenerate = true)
@@ -33,9 +34,12 @@ data class DataItemTypeTest(
 
 @Dao
 interface DataItemTypeTestDao {
-    @Query("SELECT * FROM dataitemtypetest ORDER BY uid DESC LIMIT 10")
-    fun getDataItemTypeTests(): Flow<List<DataItemTypeTest>>
+    @Query("SELECT * FROM dataitemtype ORDER BY uid DESC")
+    fun getDataItemTypeTests(): Flow<List<DataItemType>>
 
     @Insert
-    suspend fun insertDataItemTypeTest(item: DataItemTypeTest)
+    suspend fun insertDataItemTypeTest(item: DataItemType)
+
+    @Delete
+    suspend fun deleteItem(item: DataItemType)
 }

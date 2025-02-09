@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import ir.adicom.training.data.DataItemTypeTestRepository
+import ir.adicom.training.data.local.database.DataItemType
 import ir.adicom.training.ui.dataitemtypetest.DataItemTypeTestUiState.Error
 import ir.adicom.training.ui.dataitemtypetest.DataItemTypeTestUiState.Loading
 import ir.adicom.training.ui.dataitemtypetest.DataItemTypeTestUiState.Success
@@ -37,7 +38,7 @@ class DataItemTypeTestViewModel @Inject constructor(
 ) : ViewModel() {
 
     val uiState: StateFlow<DataItemTypeTestUiState> = dataItemTypeTestRepository
-        .dataItemTypeTests.map<List<String>, DataItemTypeTestUiState>(::Success)
+        .dataItemTypeTests.map<List<DataItemType>, DataItemTypeTestUiState>(::Success)
         .catch { emit(Error(it)) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Loading)
 
@@ -46,10 +47,16 @@ class DataItemTypeTestViewModel @Inject constructor(
             dataItemTypeTestRepository.add(name)
         }
     }
+
+    fun deleteItem(item: DataItemType) {
+        viewModelScope.launch {
+            dataItemTypeTestRepository.delete(item)
+        }
+    }
 }
 
 sealed interface DataItemTypeTestUiState {
     object Loading : DataItemTypeTestUiState
     data class Error(val throwable: Throwable) : DataItemTypeTestUiState
-    data class Success(val data: List<String>) : DataItemTypeTestUiState
+    data class Success(val data: List<DataItemType>) : DataItemTypeTestUiState
 }

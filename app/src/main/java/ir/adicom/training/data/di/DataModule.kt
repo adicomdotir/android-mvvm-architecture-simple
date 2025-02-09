@@ -20,11 +20,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import ir.adicom.training.data.DataItemTypeTestRepository
 import ir.adicom.training.data.DefaultDataItemTypeTestRepository
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @Module
@@ -38,12 +35,12 @@ interface DataModule {
     ): DataItemTypeTestRepository
 }
 
-class FakeDataItemTypeTestRepository @Inject constructor() : DataItemTypeTestRepository {
-    override val dataItemTypeTests: Flow<List<String>> = flowOf(fakeDataItemTypeTests)
-
-    override suspend fun add(name: String) {
-        throw NotImplementedError()
-    }
-}
-
-val fakeDataItemTypeTests = listOf("One", "Two", "Three")
+//class FakeDataItemTypeTestRepository @Inject constructor() : DataItemTypeTestRepository {
+//    override val dataItemTypeTests: Flow<List<DataItemTypeTest>> = flowOf(fakeDataItemTypeTests)
+//
+//    override suspend fun add(name: String) {
+//        throw NotImplementedError()
+//    }
+//}
+//
+//val fakeDataItemTypeTests = listOf("One", "Two", "Three")
