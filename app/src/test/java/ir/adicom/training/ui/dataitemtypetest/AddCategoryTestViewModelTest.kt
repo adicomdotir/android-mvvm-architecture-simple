@@ -25,6 +25,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import ir.adicom.training.data.DataItemTypeTestRepository
+import ir.adicom.training.data.local.database.DataItemType
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -32,7 +33,7 @@ import ir.adicom.training.data.DataItemTypeTestRepository
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 @OptIn(ExperimentalCoroutinesApi::class) // TODO: Remove when stable
-class DataItemTypeTestViewModelTest {
+class AddCategoryTestViewModelTest {
     @Test
     fun uiState_initiallyLoading() = runTest {
         val viewModel = DataItemTypeTestViewModel(FakeDataItemTypeTestRepository())
@@ -48,12 +49,16 @@ class DataItemTypeTestViewModelTest {
 
 private class FakeDataItemTypeTestRepository : DataItemTypeTestRepository {
 
-    private val data = mutableListOf<String>()
+    private val data = mutableListOf<DataItemType>()
 
-    override val dataItemTypeTests: Flow<List<String>>
+    override val dataItemTypeTests: Flow<List<DataItemType>>
         get() = flow { emit(data.toList()) }
 
     override suspend fun add(name: String) {
-        data.add(0, name)
+        data.add(0, DataItemType(name))
+    }
+
+    override suspend fun delete(item: DataItemType) {
+        data.remove(item)
     }
 }

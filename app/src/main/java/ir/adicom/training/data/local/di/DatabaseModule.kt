@@ -24,6 +24,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import ir.adicom.training.data.local.database.AppDatabase
+import ir.adicom.training.data.local.database.CategoryDao
 import ir.adicom.training.data.local.database.DataItemTypeTestDao
 import javax.inject.Singleton
 
@@ -34,6 +35,11 @@ class DatabaseModule {
     @Provides
     fun provideDataItemTypeTestDao(appDatabase: AppDatabase): DataItemTypeTestDao {
         return appDatabase.dataItemTypeTestDao()
+    }
+
+    @Provides
+    fun provideCategoryDao(appDatabase: AppDatabase): CategoryDao {
+        return appDatabase.categoryDao()
     }
 
     @Provides

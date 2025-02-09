@@ -16,6 +16,7 @@
 
 package ir.adicom.training.ui
 
+import ir.adicom.training.ui.add_cateogry.AddCategoryScreen
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -29,8 +30,9 @@ import ir.adicom.training.ui.dataitemtypetest.DataItemTypeTestScreen
 fun MainNavigation() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "main") {
+    NavHost(navController = navController, startDestination = "addCategory") {
         composable("main") { DataItemTypeTestScreen(modifier = Modifier.padding(16.dp)) }
         // TODO: Add more destinations
+        composable("addCategory") { AddCategoryScreen() }
     }
 }

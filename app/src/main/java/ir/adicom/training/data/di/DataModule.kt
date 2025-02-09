@@ -20,8 +20,14 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ir.adicom.training.data.CategoryRepository
 import ir.adicom.training.data.DataItemTypeTestRepository
+import ir.adicom.training.data.DefaultCategoryRepository
 import ir.adicom.training.data.DefaultDataItemTypeTestRepository
+import ir.adicom.training.data.local.database.DataItemType
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @Module
@@ -33,14 +39,30 @@ interface DataModule {
     fun bindsDataItemTypeTestRepository(
         dataItemTypeTestRepository: DefaultDataItemTypeTestRepository
     ): DataItemTypeTestRepository
+
+
+
+    @Singleton
+    @Binds
+    fun bindsCategoryRepository(
+        categoryRepository: DefaultCategoryRepository
+    ): CategoryRepository
 }
 
-//class FakeDataItemTypeTestRepository @Inject constructor() : DataItemTypeTestRepository {
-//    override val dataItemTypeTests: Flow<List<DataItemTypeTest>> = flowOf(fakeDataItemTypeTests)
-//
-//    override suspend fun add(name: String) {
-//        throw NotImplementedError()
-//    }
-//}
-//
-//val fakeDataItemTypeTests = listOf("One", "Two", "Three")
+class FakeDataItemTypeTestRepository @Inject constructor() : DataItemTypeTestRepository {
+    override val dataItemTypeTests: Flow<List<DataItemType>> = flowOf(fakeDataItemTypeTests)
+
+    override suspend fun add(name: String) {
+        throw NotImplementedError()
+    }
+
+    override suspend fun delete(item: DataItemType) {
+        throw NotImplementedError()
+    }
+}
+
+val fakeDataItemTypeTests = listOf(
+    DataItemType("One"),
+    DataItemType("Two"),
+    DataItemType("Three"),
+)

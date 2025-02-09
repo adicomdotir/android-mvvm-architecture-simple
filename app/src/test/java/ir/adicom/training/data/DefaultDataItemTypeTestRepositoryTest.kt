@@ -54,4 +54,8 @@ private class FakeDataItemTypeTestDao : DataItemTypeTestDao {
     override suspend fun insertDataItemTypeTest(item: DataItemType) {
         data.add(0, item)
     }
+
+    override suspend fun deleteItem(item: DataItemType) {
+        data.remove(item)
+    }
 }

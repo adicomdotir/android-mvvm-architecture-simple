@@ -36,7 +36,7 @@ class NavigationTest {
     @Test
     fun test1() {
         // TODO: Add navigation tests
-        composeTestRule.onNodeWithText(fakeDataItemTypeTests.first(), substring = true).assertExists()
+        composeTestRule.onNodeWithText(fakeDataItemTypeTests.first().name, substring = true).assertExists()
     }
 }
 

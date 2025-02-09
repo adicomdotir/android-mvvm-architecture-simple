@@ -16,11 +16,31 @@
 
 package ir.adicom.training.data.local.database
 
-import androidx.room.Database
-import androidx.room.RoomDatabase
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Entity
+import androidx.room.Insert
+import androidx.room.PrimaryKey
+import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
-@Database(entities = [DataItemType::class, Category::class], version = 2)
-abstract class AppDatabase : RoomDatabase() {
-    abstract fun dataItemTypeTestDao(): DataItemTypeTestDao
-    abstract fun categoryDao(): CategoryDao
+@Entity(tableName = "categories")
+data class Category(
+    val name: String,
+    val color: Int
+) {
+    @PrimaryKey(autoGenerate = true)
+    var uid: Int = 0
+}
+
+@Dao
+interface CategoryDao {
+    @Query("SELECT * FROM categories ORDER BY uid DESC")
+    fun getCategories(): Flow<List<Category>>
+
+    @Insert
+    suspend fun insertItem(item: Category)
+
+    @Delete
+    suspend fun deleteItem(item: Category)
 }
