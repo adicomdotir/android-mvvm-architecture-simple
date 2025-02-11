@@ -1,5 +1,6 @@
 package ir.adicom.training.ui.add_cateogry
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,27 +18,34 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 
 @Composable
 fun AddCategoryScreen(
     modifier: Modifier = Modifier,
-    viewModel: AddCategoryTestViewModel = hiltViewModel()
+    viewModel: AddCategoryTestViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     var title by remember { mutableStateOf("") }
     var selectedColor by remember { mutableStateOf(Color.White) }
     var showColorDialog by remember { mutableStateOf(false) }
     val state = viewModel.state.collectAsState()
 
-    if (state.value) {
-        return Text("SAVED")
+    if (state.value.success) {
+        navController.popBackStack()
+    }
+
+    if (state.value.validate) {
+        Toast.makeText(LocalContext.current, "Plz enter title for category", Toast.LENGTH_SHORT).show()
+
     }
 
     val colors = listOf(
@@ -67,7 +75,9 @@ fun AddCategoryScreen(
         topBar = {
             AppBar(
                 title = "Add Category",
-                onBackClick = { /* Handle back navigation */ },
+                onBackClick = {
+                    navController.popBackStack()
+                },
                 onSaveClick = {
                     viewModel.addCategory(title = title, color = selectedColor.toArgb())
                 }

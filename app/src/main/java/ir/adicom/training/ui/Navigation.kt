@@ -24,15 +24,17 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import ir.adicom.training.ui.cateogry_list.CategoryListScreen
 import ir.adicom.training.ui.dataitemtypetest.DataItemTypeTestScreen
 
 @Composable
 fun MainNavigation() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "addCategory") {
+    NavHost(navController = navController, startDestination = "categoryList") {
         composable("main") { DataItemTypeTestScreen(modifier = Modifier.padding(16.dp)) }
         // TODO: Add more destinations
-        composable("addCategory") { AddCategoryScreen() }
+        composable("addCategory") { AddCategoryScreen(navController = navController) }
+        composable("categoryList") { CategoryListScreen(navController = navController) }
     }
 }

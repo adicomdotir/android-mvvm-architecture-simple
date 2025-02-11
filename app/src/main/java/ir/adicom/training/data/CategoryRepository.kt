@@ -24,12 +24,15 @@ import ir.adicom.training.data.local.database.DataItemTypeTestDao
 import javax.inject.Inject
 
 interface CategoryRepository {
+    val categories: Flow<List<Category>>
     suspend fun addCategory(name: String, color: Int)
 }
 
 class DefaultCategoryRepository @Inject constructor(
     private val categoryDao: CategoryDao
 ) : CategoryRepository {
+    override val categories: Flow<List<Category>> = categoryDao.getCategories()
+
     override suspend fun addCategory(title: String, color: Int) {
         val item = Category(title, color)
         categoryDao.insertItem(item)

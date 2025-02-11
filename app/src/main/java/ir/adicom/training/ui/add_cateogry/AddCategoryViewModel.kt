@@ -38,19 +38,25 @@ import javax.inject.Inject
 class AddCategoryTestViewModel @Inject constructor(
     private val repository: CategoryRepository
 ) : ViewModel() {
-    private val _state = MutableStateFlow(false)
-    val state: StateFlow<Boolean> = _state
+    private val _state = MutableStateFlow(AddCategoryUiState())
+    val state: StateFlow<AddCategoryUiState> = _state
 
     fun addCategory(title: String, color: Int) {
         viewModelScope.launch {
-            repository.addCategory(title, color)
-            _state.value = true
+            if (title.isEmpty()) {
+                _state.emit(_state.value.copy(validate = true))
+            } else {
+                _state.emit(_state.value.copy(loading = true))
+                repository.addCategory(title, color)
+                _state.emit(_state.value.copy(loading = false, success = true))
+            }
         }
     }
 }
 
-sealed interface AddCategoryUiState {
-    data object Loading : AddCategoryUiState
-    data class Error(val throwable: Throwable) : AddCategoryUiState
-    data class Success(val data: List<DataItemType>) : AddCategoryUiState
-}
+data class AddCategoryUiState(
+    val loading: Boolean = false,
+    val error: String? = null,
+    val success: Boolean = false,
+    val validate: Boolean = false,
+)
