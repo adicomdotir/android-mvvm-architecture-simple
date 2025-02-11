@@ -31,7 +31,9 @@ import ir.adicom.training.data.local.database.DataItemType
 import ir.adicom.training.ui.dataitemtypetest.DataItemTypeTestUiState.Error
 import ir.adicom.training.ui.dataitemtypetest.DataItemTypeTestUiState.Loading
 import ir.adicom.training.ui.dataitemtypetest.DataItemTypeTestUiState.Success
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -41,10 +43,13 @@ class AddCategoryTestViewModel @Inject constructor(
     private val _state = MutableStateFlow(AddCategoryUiState())
     val state: StateFlow<AddCategoryUiState> = _state
 
+    private val _toastMessage = MutableSharedFlow<String>()
+    val toastMessage: SharedFlow<String> = _toastMessage
+
     fun addCategory(title: String, color: Int) {
         viewModelScope.launch {
             if (title.isEmpty()) {
-                _state.emit(_state.value.copy(validate = true))
+                _toastMessage.emit("Title cannot be empty")
             } else {
                 _state.emit(_state.value.copy(loading = true))
                 repository.addCategory(title, color)
@@ -58,5 +63,4 @@ data class AddCategoryUiState(
     val loading: Boolean = false,
     val error: String? = null,
     val success: Boolean = false,
-    val validate: Boolean = false,
 )

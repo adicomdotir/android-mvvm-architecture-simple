@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 
@@ -34,6 +35,7 @@ fun AddCategoryScreen(
     viewModel: AddCategoryTestViewModel = hiltViewModel(),
     navController: NavController
 ) {
+    val context = LocalContext.current
     var title by remember { mutableStateOf("") }
     var selectedColor by remember { mutableStateOf(Color.White) }
     var showColorDialog by remember { mutableStateOf(false) }
@@ -43,9 +45,10 @@ fun AddCategoryScreen(
         navController.popBackStack()
     }
 
-    if (state.value.validate) {
-        Toast.makeText(LocalContext.current, "Plz enter title for category", Toast.LENGTH_SHORT).show()
-
+    LaunchedEffect(Unit) {
+        viewModel.toastMessage.collect { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     val colors = listOf(
