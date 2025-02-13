@@ -26,6 +26,7 @@ import javax.inject.Inject
 interface CategoryRepository {
     val categories: Flow<List<Category>>
     suspend fun addCategory(name: String, color: Int)
+    suspend fun deleteCategory(item: Category)
 }
 
 class DefaultCategoryRepository @Inject constructor(
@@ -36,5 +37,9 @@ class DefaultCategoryRepository @Inject constructor(
     override suspend fun addCategory(title: String, color: Int) {
         val item = Category(title, color)
         categoryDao.insertItem(item)
+    }
+
+    override suspend fun deleteCategory(item: Category) {
+        categoryDao.deleteItem(item)
     }
 }

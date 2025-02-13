@@ -1,6 +1,6 @@
 package ir.adicom.training.ui.cateogry_list
 
-import android.util.Log
+import DeleteDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import ir.adicom.training.data.local.database.Category
 
 const val TAG = "tag"
 
@@ -31,8 +32,20 @@ fun CategoryListScreen(
     modifier: Modifier = Modifier,
     viewModel: CategoryListViewModel = hiltViewModel()
 ) {
-
+    val deleteDialog: MutableState<Category?> = remember { mutableStateOf(null) }
     val state = viewModel.uiState.collectAsState().value
+
+    if (deleteDialog.value != null) {
+        DeleteDialog(
+            onDismissRequest = { deleteDialog.value = null },
+            onConfirmation = {
+                viewModel.delete(deleteDialog.value!!)
+                deleteDialog.value = null
+            },
+            dialogTitle = "Delete Category",
+            dialogText = "Do you want delete this category?",
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -81,7 +94,7 @@ fun CategoryListScreen(
                                 Text(item.name)
                                 IconButton(
                                     onClick = {
-                                        Log.e(TAG, "CategoryListScreen: onDeleteClick")
+                                        deleteDialog.value = item
                                     }
                                 ) {
                                     Icon(Icons.Default.Delete, "Delete", tint = Color.Red)

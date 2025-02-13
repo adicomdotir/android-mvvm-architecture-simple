@@ -10,16 +10,23 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CategoryListViewModel @Inject constructor(
-    repository: CategoryRepository
+    private val repository: CategoryRepository
 ) : ViewModel() {
     val uiState: StateFlow<CategoryListUiState> = repository
         .categories.map<List<Category>, CategoryListUiState>(CategoryListUiState::Success)
         .catch { emit(CategoryListUiState.Error(it)) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), CategoryListUiState.Loading)
+
+    fun delete(item: Category) {
+        viewModelScope.launch {
+            repository.deleteCategory(item)
+        }
+    }
 }
 
 sealed interface CategoryListUiState {
