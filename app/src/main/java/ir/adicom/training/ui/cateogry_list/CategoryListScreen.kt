@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import ir.adicom.training.data.local.database.Category
+import ir.adicom.training.ui.Screen
 
 const val TAG = "tag"
 
@@ -52,7 +54,10 @@ fun CategoryListScreen(
             AppBar(
                 title = "List Category",
                 onAddClick = {
-                    navController.navigate("addCategory")
+                    navController.navigate(Screen.AddCategory.route)
+                },
+                onBackClick = {
+                    navController.popBackStack()
                 }
             )
         }
@@ -113,7 +118,8 @@ fun CategoryListScreen(
 @Composable
 fun AppBar(
     title: String,
-    onAddClick: () -> Unit
+    onAddClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     TopAppBar(
         title = {
@@ -121,6 +127,14 @@ fun AppBar(
                 text = title,
                 style = MaterialTheme.typography.titleMedium
             )
+        },
+        navigationIcon = {
+            IconButton(onClick = onBackClick) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back"
+                )
+            }
         },
         actions = {
             IconButton(onClick = onAddClick) {
