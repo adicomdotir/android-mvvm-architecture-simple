@@ -26,6 +26,7 @@ import dagger.hilt.components.SingletonComponent
 import ir.adicom.training.data.local.database.AppDatabase
 import ir.adicom.training.data.local.database.CategoryDao
 import ir.adicom.training.data.local.database.DataItemTypeTestDao
+import ir.adicom.training.data.local.database.ExpenseDao
 import javax.inject.Singleton
 
 
@@ -35,6 +36,11 @@ class DatabaseModule {
     @Provides
     fun provideDataItemTypeTestDao(appDatabase: AppDatabase): DataItemTypeTestDao {
         return appDatabase.dataItemTypeTestDao()
+    }
+
+    @Provides
+    fun provideExpenseDao(appDatabase: AppDatabase): ExpenseDao {
+        return appDatabase.expenseDao()
     }
 
     @Provides

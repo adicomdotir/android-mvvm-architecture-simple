@@ -11,6 +11,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,30 +43,47 @@ fun HomeScreen(navController: NavHostController) {
         drawerContent = {
             ModalDrawerSheet {
                 Column(
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
                         .verticalScroll(rememberScrollState())
                 ) {
                     Spacer(Modifier.height(12.dp))
-                    Text("Drawer Title", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleLarge)
+                    Text(
+                        "Drawer Title",
+                        modifier = Modifier.padding(16.dp),
+                        style = MaterialTheme.typography.titleLarge
+                    )
                     HorizontalDivider()
 
-                    Text("Section 1", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleMedium)
+                    Text(
+                        "Main Section",
+                        modifier = Modifier.padding(16.dp),
+                        style = MaterialTheme.typography.titleMedium
+                    )
                     NavigationDrawerItem(
                         label = { Text("Categories") },
                         selected = false,
+                        icon = { Icon(Icons.Outlined.Info, contentDescription = null) },
                         onClick = {
                             navController.navigate(Screen.CategoryList.route)
                         }
                     )
                     NavigationDrawerItem(
-                        label = { Text("Item 2") },
+                        label = { Text("Expenses") },
                         selected = false,
-                        onClick = { /* Handle click */ }
+                        icon = { Icon(Icons.Outlined.Info, contentDescription = null) },
+                        onClick = {
+                            navController.navigate(Screen.AddExpense.route)
+                        }
                     )
 
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-                    Text("Section 2", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleMedium)
+                    Text(
+                        "Section 2",
+                        modifier = Modifier.padding(16.dp),
+                        style = MaterialTheme.typography.titleMedium
+                    )
                     NavigationDrawerItem(
                         label = { Text("Settings") },
                         selected = false,
@@ -76,7 +94,12 @@ fun HomeScreen(navController: NavHostController) {
                     NavigationDrawerItem(
                         label = { Text("Help and feedback") },
                         selected = false,
-                        icon = { Icon(Icons.AutoMirrored.Outlined.List, contentDescription = null) },
+                        icon = {
+                            Icon(
+                                Icons.AutoMirrored.Outlined.List,
+                                contentDescription = null
+                            )
+                        },
                         onClick = { /* Handle click */ },
                     )
                     Spacer(Modifier.height(12.dp))
@@ -84,7 +107,7 @@ fun HomeScreen(navController: NavHostController) {
             }
         },
         drawerState = drawerState
-    )  {
+    ) {
         Scaffold(
             topBar = {
                 AppBar(
