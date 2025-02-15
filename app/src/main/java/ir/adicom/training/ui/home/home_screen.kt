@@ -73,7 +73,7 @@ fun HomeScreen(navController: NavHostController) {
                         selected = false,
                         icon = { Icon(Icons.Outlined.Info, contentDescription = null) },
                         onClick = {
-                            navController.navigate(Screen.AddExpense.route)
+                            navController.navigate(Screen.ExpenseList.route)
                         }
                     )
 

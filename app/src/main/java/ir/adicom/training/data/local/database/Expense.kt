@@ -32,14 +32,26 @@ data class Expense(
     var uid: Int = 0
 }
 
+data class ExpenseCategoryPair(
+    val uid: Int,
+    val title: String,
+    val price: Int,
+    val description: String?,
+    val dateTime: Date,
+    val categoryName: String
+)
+
 @Dao
 interface ExpenseDao {
-    @Query("SELECT * FROM expenses ORDER BY uid DESC")
-    fun getExpenses(): Flow<List<Expense>>
+//    @Query("SELECT * FROM expenses ORDER BY uid DESC")
+//    fun getExpenses(): Flow<List<Expense>>
+
+    @Query("SELECT *, categories.name AS categoryName FROM expenses INNER JOIN categories on expenses.categoryId == categories.uid ORDER BY uid DESC")
+    fun getExpenses(): Flow<List<ExpenseCategoryPair>>
 
     @Insert
     suspend fun insertItem(item: Expense)
 
-    @Delete
-    suspend fun deleteItem(item: Expense)
+    @Query("DELETE FROM expenses WHERE uid == :id;")
+    suspend fun deleteItem(id: Int)
 }

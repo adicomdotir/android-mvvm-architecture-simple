@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import ir.adicom.training.ui.add_expense.AddExpenseScreen
 import ir.adicom.training.ui.cateogry_list.CategoryListScreen
 import ir.adicom.training.ui.dataitemtypetest.DataItemTypeTestScreen
+import ir.adicom.training.ui.expense_list.ExpenseListScreen
 import ir.adicom.training.ui.home.HomeScreen
 
 @Composable
@@ -24,6 +25,7 @@ fun MainNavigation() {
         composable(Screen.AddCategory.route) { AddCategoryScreen(navController = navController) }
         composable(Screen.CategoryList.route) { CategoryListScreen(navController = navController) }
         composable(Screen.AddExpense.route) { AddExpenseScreen(navController = navController) }
+        composable(Screen.ExpenseList.route) { ExpenseListScreen(navController = navController) }
     }
 }
 
@@ -32,4 +34,6 @@ sealed class Screen(val route: String) {
     data object AddCategory: Screen("add_category_screen")
     data object CategoryList: Screen("category_list_screen")
     data object AddExpense: Screen("add_expense_screen")
+    data object ExpenseList: Screen("expense_list_screen")
+
 }
