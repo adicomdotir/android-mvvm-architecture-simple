@@ -20,18 +20,19 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Entity
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Entity(tableName = "categories")
 data class Category(
+    @PrimaryKey(autoGenerate = true)
+    val uid: Int = 0,
     val name: String,
     val color: Int
-) {
-    @PrimaryKey(autoGenerate = true)
-    var uid: Int = 0
-}
+)
 
 @Dao
 interface CategoryDao {
@@ -43,4 +44,10 @@ interface CategoryDao {
 
     @Delete
     suspend fun deleteItem(item: Category)
+
+    @Query("SELECT * FROM categories WHERE uid = :id LIMIT 1")
+    suspend fun getCategoryById(id: Int): Category
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateItem(item: Category)
 }

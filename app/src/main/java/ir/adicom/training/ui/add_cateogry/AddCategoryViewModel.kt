@@ -16,28 +16,22 @@
 
 package ir.adicom.training.ui.add_cateogry
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ir.adicom.training.data.CategoryRepository
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import ir.adicom.training.data.DataItemTypeTestRepository
-import ir.adicom.training.data.local.database.DataItemType
-import ir.adicom.training.ui.dataitemtypetest.DataItemTypeTestUiState.Error
-import ir.adicom.training.ui.dataitemtypetest.DataItemTypeTestUiState.Loading
-import ir.adicom.training.ui.dataitemtypetest.DataItemTypeTestUiState.Success
+import ir.adicom.training.data.local.database.Category
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AddCategoryTestViewModel @Inject constructor(
+class AddCategoryViewModel @Inject constructor(
     private val repository: CategoryRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(AddCategoryUiState())
@@ -57,10 +51,32 @@ class AddCategoryTestViewModel @Inject constructor(
             }
         }
     }
+
+    fun getCategory(id: Int) {
+        viewModelScope.launch {
+            _state.emit(_state.value.copy(loading = true))
+            val result = repository.getCategoryById(id)
+            _state.emit(_state.value.copy(loading = false, category = result))
+        }
+    }
+
+    fun updateCategory(category: Category) {
+        Log.i("TAG", "updateCategory: ${category.uid}")
+        viewModelScope.launch {
+            if (category.name.isEmpty()) {
+                _toastMessage.emit("Title cannot be empty")
+            } else {
+                _state.emit(_state.value.copy(loading = true))
+                repository.updateCategory(category)
+                _state.emit(_state.value.copy(loading = false, success = true, category = null))
+            }
+        }
+    }
 }
 
 data class AddCategoryUiState(
     val loading: Boolean = false,
     val error: String? = null,
     val success: Boolean = false,
+    val category: Category? = null
 )

@@ -2,6 +2,7 @@ package ir.adicom.training.ui.cateogry_list
 
 import DeleteDialog
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -54,7 +55,7 @@ fun CategoryListScreen(
             AppBar(
                 title = "List Category",
                 onAddClick = {
-                    navController.navigate(Screen.AddCategory.route)
+                    navController.navigate(Screen.AddCategory.route + "/-1")
                 },
                 onBackClick = {
                     navController.popBackStack()
@@ -84,7 +85,11 @@ fun CategoryListScreen(
                 ) {
                     items(state.data) { item ->
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    navController.navigate(Screen.AddCategory.route + "/" + item.uid)
+                                },
                         ) {
                             Box(
                                 modifier = Modifier

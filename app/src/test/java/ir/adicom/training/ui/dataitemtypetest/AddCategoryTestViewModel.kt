@@ -33,7 +33,7 @@ import ir.adicom.training.data.local.database.DataItemType
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 @OptIn(ExperimentalCoroutinesApi::class) // TODO: Remove when stable
-class AddCategoryTestViewModelTest {
+class AddCategoryTestViewModel {
     @Test
     fun uiState_initiallyLoading() = runTest {
         val viewModel = DataItemTypeTestViewModel(FakeDataItemTypeTestRepository())

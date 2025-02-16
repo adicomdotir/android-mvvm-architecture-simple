@@ -1,5 +1,6 @@
 package ir.adicom.training.ui.add_cateogry
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,15 +26,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 
 @Composable
 fun AddCategoryScreen(
     modifier: Modifier = Modifier,
-    viewModel: AddCategoryTestViewModel = hiltViewModel(),
-    navController: NavController
+    viewModel: AddCategoryViewModel = hiltViewModel(),
+    navController: NavController,
+    id: Int?
 ) {
     val context = LocalContext.current
     var title by remember { mutableStateOf("") }
@@ -74,15 +75,36 @@ fun AddCategoryScreen(
         Color(0xFF4A4A4A)  // Charcoal Gray
     )
 
+    if (id != -1) {
+        LaunchedEffect(Unit) {
+            viewModel.getCategory(id!!)
+        }
+    }
+    if (state.value.category != null) {
+        title = state.value.category!!.name
+        selectedColor = Color(state.value.category!!.color)
+    }
+
     Scaffold(
         topBar = {
             AppBar(
-                title = "Add Category",
+                title = if (id == -1) "Add Category" else "Edit Category",
                 onBackClick = {
                     navController.popBackStack()
                 },
                 onSaveClick = {
-                    viewModel.addCategory(title = title, color = selectedColor.toArgb())
+                    if (id == -1) {
+                        viewModel.addCategory(title = title, color = selectedColor.toArgb())
+                    } else {
+                        Log.d("TAG", "AddCategoryScreen: ${state.value.category?.uid}")
+                        viewModel.updateCategory(
+                            state.value.category!!.copy(
+                                name = title,
+                                color = selectedColor.toArgb()
+                                
+                            )
+                        )
+                    }
                 }
             )
         }
