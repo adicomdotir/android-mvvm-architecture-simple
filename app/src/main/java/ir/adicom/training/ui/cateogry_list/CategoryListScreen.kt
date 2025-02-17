@@ -27,7 +27,6 @@ import androidx.navigation.NavController
 import ir.adicom.training.data.local.database.Category
 import ir.adicom.training.ui.Screen
 
-const val TAG = "tag"
 
 @Composable
 fun CategoryListScreen(

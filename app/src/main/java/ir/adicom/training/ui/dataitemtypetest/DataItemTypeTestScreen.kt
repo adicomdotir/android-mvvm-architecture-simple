@@ -44,9 +44,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ir.adicom.training.TAG
 import ir.adicom.training.data.local.database.DataItemType
 
-const val TAG = "tag"
 
 @Composable
 fun DataItemTypeTestScreen(modifier: Modifier = Modifier, viewModel: DataItemTypeTestViewModel = hiltViewModel()) {

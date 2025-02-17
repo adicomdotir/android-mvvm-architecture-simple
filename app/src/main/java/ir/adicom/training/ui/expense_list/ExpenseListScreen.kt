@@ -37,8 +37,6 @@ import ir.adicom.training.data.local.database.Expense
 import ir.adicom.training.ui.Screen
 import java.text.SimpleDateFormat
 
-const val TAG = "tag"
-
 @Composable
 fun ExpenseListScreen(
     navController: NavController,

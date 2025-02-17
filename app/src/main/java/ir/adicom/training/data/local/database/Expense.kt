@@ -17,7 +17,7 @@ import java.util.Date
             parentColumns = arrayOf("uid"),
             childColumns = arrayOf("categoryId"),
             onUpdate = ForeignKey.CASCADE,
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.RESTRICT
         )]
 )
 data class Expense(
