@@ -19,5 +19,7 @@ package ir.adicom.training
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
 
+const val TAG = "tag"
+
 @HiltAndroidApp
 class MyTestApplication : Application()

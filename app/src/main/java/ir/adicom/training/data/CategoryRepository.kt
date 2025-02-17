@@ -1,27 +1,10 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package ir.adicom.training.data
 
 import android.util.Log
+import ir.adicom.training.TAG
 import ir.adicom.training.data.local.database.Category
 import ir.adicom.training.data.local.database.CategoryDao
 import kotlinx.coroutines.flow.Flow
-import ir.adicom.training.data.local.database.DataItemType
-import ir.adicom.training.data.local.database.DataItemTypeTestDao
 import javax.inject.Inject
 
 interface CategoryRepository {
@@ -43,7 +26,11 @@ class DefaultCategoryRepository @Inject constructor(
     }
 
     override suspend fun deleteCategory(item: Category) {
-        categoryDao.deleteItem(item)
+        try {
+            categoryDao.deleteItem(item)
+        } catch (e: Exception) {
+            Log.e(TAG, "deleteCategory: ${e.message}", )
+        }
     }
 
     override suspend fun getCategoryById(id: Int): Category {
@@ -51,7 +38,7 @@ class DefaultCategoryRepository @Inject constructor(
     }
 
     override suspend fun updateCategory(category: Category) {
-        Log.e("TAG", "updateCategory: ${category.uid}", )
+        Log.e(TAG, "updateCategory: ${category.uid}", )
         categoryDao.updateItem(category)
     }
 }
