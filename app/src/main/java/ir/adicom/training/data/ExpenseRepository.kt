@@ -11,6 +11,8 @@ interface ExpenseRepository {
     val expenses: Flow<List<ExpenseCategoryPair>>
     suspend fun addExpense(name: String, price: Int, id: Int, date: Date)
     suspend fun deleteExpense(id: Int)
+    suspend fun getExpenseById(id: Int): Expense
+    suspend fun updateExpense(expense: Expense)
 }
 
 class DefaultExpenseRepository @Inject constructor(
@@ -25,5 +27,13 @@ class DefaultExpenseRepository @Inject constructor(
 
     override suspend fun deleteExpense(id: Int) {
         expenseDao.deleteItem(id)
+    }
+
+    override suspend fun getExpenseById(id: Int): Expense {
+        return expenseDao.getExpenseById(id)
+    }
+
+    override suspend fun updateExpense(expense: Expense) {
+        expenseDao.updateItem(expense = expense)
     }
 }

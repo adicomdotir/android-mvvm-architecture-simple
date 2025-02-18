@@ -1,6 +1,5 @@
 package ir.adicom.training.ui
 
-import android.util.Log
 import ir.adicom.training.ui.add_cateogry.AddCategoryScreen
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -23,10 +22,6 @@ fun MainNavigation() {
         composable("main") { DataItemTypeTestScreen(modifier = Modifier.padding(16.dp)) }
         // TODO: Add more destinations
         composable(Screen.Home.route) { HomeScreen(navController = navController) }
-//        composable(Screen.AddCategory.route + "/{id}") { AddCategoryScreen(
-//            navController = navController,
-//            id = id
-//        ) }
         composable(Screen.AddCategory.route + "/{id}") { navBackStackEntry ->
             val id = navBackStackEntry.arguments?.getString("id")
             id?.let { id ->
@@ -34,7 +29,12 @@ fun MainNavigation() {
             }
         }
         composable(Screen.CategoryList.route) { CategoryListScreen(navController = navController) }
-        composable(Screen.AddExpense.route) { AddExpenseScreen(navController = navController) }
+        composable(Screen.AddExpense.route + "/{id}") { navBackStackEntry ->
+            val id = navBackStackEntry.arguments?.getString("id")
+            id?.let { id ->
+                AddExpenseScreen(navController = navController, id = id.toInt())
+            }
+        }
         composable(Screen.ExpenseList.route) { ExpenseListScreen(navController = navController) }
     }
 }

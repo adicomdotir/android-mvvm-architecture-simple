@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import ir.adicom.training.data.CategoryRepository
 import ir.adicom.training.data.ExpenseRepository
 import ir.adicom.training.data.local.database.Category
+import ir.adicom.training.data.local.database.Expense
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -44,11 +45,27 @@ class AddExpenseViewModel @Inject constructor(
         }
     }
 
+    fun getExpense(id: Int) {
+        viewModelScope.launch {
+            _state.emit(_state.value.copy(loading = true))
+            val result = repository.getExpenseById(id)
+            _state.emit(_state.value.copy(loading = false, expense = result))
+        }
+    }
+
     private fun getCategories() {
         viewModelScope.launch {
              categoryRepository.categories.collect {
                  _categories.value = it
             }
+        }
+    }
+
+    fun updateExpense(expense: Expense) {
+        viewModelScope.launch {
+            _state.emit(_state.value.copy(loading = true))
+            repository.updateExpense(expense)
+            _state.emit(_state.value.copy(loading = false, success = true))
         }
     }
 }
@@ -57,4 +74,5 @@ data class AddExpenseUiState(
     val loading: Boolean = false,
     val error: String? = null,
     val success: Boolean = false,
+    val expense: Expense? = null
 )
