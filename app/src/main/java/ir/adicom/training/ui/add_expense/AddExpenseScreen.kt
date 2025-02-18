@@ -27,7 +27,8 @@ import java.util.*
 fun AddExpenseScreen(
     modifier: Modifier = Modifier,
     viewModel: AddExpenseViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
+    id: Int
 ) {
     val context = LocalContext.current
     var title by remember { mutableStateOf("") }
@@ -35,6 +36,18 @@ fun AddExpenseScreen(
     var category by remember { mutableIntStateOf(-1) }
     val state = viewModel.state.collectAsState()
     val categories = viewModel.categories.collectAsState()
+
+    if (id != -1) {
+        LaunchedEffect(Unit) {
+            viewModel.getExpense(id!!)
+        }
+    }
+
+    if (state.value.expense != null) {
+        title = state.value.expense!!.title
+        price = state.value.expense!!.price.toString()
+        category = state.value.expense!!.categoryId
+    }
 
     if (state.value.success) {
         navController.popBackStack()
@@ -49,13 +62,23 @@ fun AddExpenseScreen(
     Scaffold(
         topBar = {
             AppBar(
-                title = "Add Expense",
+                title = if (id == -1) "Add Expense" else "Edit Expense",
                 onBackClick = {
                     navController.popBackStack()
                 },
                 onSaveClick = {
                     if (title.isNotEmpty() && price.isNotEmpty() && category != -1) {
-                        viewModel.addExpense(title = title, price = price, id = category)
+                        if (id == -1) {
+                            viewModel.addExpense(title = title, price = price, id = category)
+                        } else {
+                            viewModel.updateExpense(
+                                state.value.expense!!.copy(
+                                    title = title,
+                                    price = price.toInt(),
+                                    categoryId = category
+                                )
+                            )
+                        }
                     } else {
                         Toast.makeText(context, "message", Toast.LENGTH_SHORT).show()
                     }
@@ -97,9 +120,14 @@ fun AddExpenseScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                ExposedDropdownMenuSample(categories, onSelect = { id ->
-                    category = id
-                })
+
+                ExposedDropdownMenuSample(
+                    categories,
+                    onSelect = { id ->
+                        category = id
+                    },
+                    defaultId = id
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -120,10 +148,22 @@ fun AddExpenseScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExposedDropdownMenuSample(categories: State<List<Category>>, onSelect: (Int) -> Unit) {
+fun ExposedDropdownMenuSample(
+    categories: State<List<Category>>,
+    onSelect: (Int) -> Unit,
+    defaultId: Int
+) {
     val options: List<Category> = categories.value
     var expanded by remember { mutableStateOf(false) }
     var selectedOptionText by remember { mutableStateOf("") }
+
+    if (defaultId != -1) {
+        options.forEach {
+            if (it.uid == defaultId) {
+                selectedOptionText = it.name
+            }
+        }
+    }
 
     ExposedDropdownMenuBox(
         expanded = expanded,

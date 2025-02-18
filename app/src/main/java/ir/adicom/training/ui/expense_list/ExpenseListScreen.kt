@@ -1,6 +1,7 @@
 package ir.adicom.training.ui.expense_list
 
 import DeleteExpenseDialog
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -63,7 +64,7 @@ fun ExpenseListScreen(
             AppBar(
                 title = "List Category",
                 onAddClick = {
-                    navController.navigate(Screen.AddExpense.route)
+                    navController.navigate(Screen.AddExpense.route + "/-1")
                 },
                 onBackClick = {
                     navController.popBackStack()
@@ -93,7 +94,11 @@ fun ExpenseListScreen(
                 ) {
                     items(state.data) { item ->
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    navController.navigate(Screen.AddExpense.route + "/${item.uid}")
+                                },
                         ) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),

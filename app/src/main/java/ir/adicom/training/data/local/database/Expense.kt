@@ -7,6 +7,7 @@ import androidx.room.ForeignKey
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
 
@@ -21,16 +22,15 @@ import java.util.Date
         )]
 )
 data class Expense(
+    @PrimaryKey(autoGenerate = true)
+    val uid: Int = 0,
     val title: String,
     val price: Int,
     val description: String?,
     val dateTime: Date,
     val categoryId: Int
 
-) {
-    @PrimaryKey(autoGenerate = true)
-    var uid: Int = 0
-}
+)
 
 data class ExpenseCategoryPair(
     val uid: Int,
@@ -54,4 +54,10 @@ interface ExpenseDao {
 
     @Query("DELETE FROM expenses WHERE uid == :id;")
     suspend fun deleteItem(id: Int)
+
+    @Query("SELECT * FROM expenses WHERE uid = :id LIMIT 1")
+    suspend fun getExpenseById(id: Int): Expense
+
+    @Update
+    suspend fun updateItem(expense: Expense)
 }
