@@ -1,8 +1,10 @@
 package ir.adicom.training.ui.add_expense
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import ir.adicom.training.TAG
 import ir.adicom.training.data.CategoryRepository
 import ir.adicom.training.data.ExpenseRepository
 import ir.adicom.training.data.local.database.Category
@@ -49,6 +51,7 @@ class AddExpenseViewModel @Inject constructor(
         viewModelScope.launch {
             _state.emit(_state.value.copy(loading = true))
             val result = repository.getExpenseById(id)
+            Log.d(TAG, "getExpense: ${result}")
             _state.emit(_state.value.copy(loading = false, expense = result))
         }
     }

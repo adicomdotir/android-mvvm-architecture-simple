@@ -1,6 +1,8 @@
 package ir.adicom.training.ui.expense_list
 
 import DeleteExpenseDialog
+import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,12 +11,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -29,11 +34,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import ir.adicom.training.TAG
 import ir.adicom.training.data.local.database.Expense
 import ir.adicom.training.ui.Screen
 import java.text.SimpleDateFormat
@@ -62,7 +69,7 @@ fun ExpenseListScreen(
     Scaffold(
         topBar = {
             AppBar(
-                title = "List Category",
+                title = "List Expense",
                 onAddClick = {
                     navController.navigate(Screen.AddExpense.route + "/-1")
                 },
@@ -93,31 +100,50 @@ fun ExpenseListScreen(
                         .padding(16.dp)
                 ) {
                     items(state.data) { item ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    navController.navigate(Screen.AddExpense.route + "/${item.uid}")
-                                },
-                        ) {
+                        Card(
+                            modifier = Modifier.padding(4.dp)
+                        ){
                             Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp)
+                                    .clickable {
+                                        Log.e(TAG, "ExpenseListScreen: ${item.uid}", )
+                                        navController.navigate(Screen.AddExpense.route + "/${item.uid}")
+                                    },
                             ) {
-                                val sdf = SimpleDateFormat("dd-MM-yyyy")
-                                val currentDateAndTime = sdf.format(item.dateTime)
-                                Column {
-                                    Text(item.title)
-                                    Text(item.price.toString())
-                                    Text(item.categoryName)
-                                    Text(currentDateAndTime)
-                                }
-                                IconButton(
-                                    onClick = {
-                                        deleteDialog.value = item.uid
-                                    }
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Icon(Icons.Default.Delete, "Delete", tint = Color.Red)
+                                    Box(
+                                        modifier = Modifier
+                                            .size(24.dp)
+                                            .background(
+                                                Color(item.categoryColor),
+                                                shape = CircleShape
+                                            )
+                                    ) { }
+
+                                    val sdf = SimpleDateFormat("dd-MM-yyyy")
+                                    val currentDateAndTime = sdf.format(item.dateTime)
+                                    Column {
+                                        Row {
+                                            Text("${item.title} $${item.price}")
+
+                                        }
+                                        Text(item.categoryName)
+                                    }
+                                    Text(currentDateAndTime)
+
+                                    IconButton(
+                                        onClick = {
+                                            deleteDialog.value = item.uid
+                                        }
+                                    ) {
+                                        Icon(Icons.Default.Delete, "Delete", tint = Color.Red)
+                                    }
                                 }
                             }
                         }
