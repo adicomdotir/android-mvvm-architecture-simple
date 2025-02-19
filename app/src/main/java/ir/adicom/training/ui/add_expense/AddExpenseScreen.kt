@@ -1,5 +1,6 @@
 package ir.adicom.training.ui.add_expense
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import ir.adicom.training.TAG
 import ir.adicom.training.data.local.database.Category
 import java.text.SimpleDateFormat
 import java.util.*
@@ -30,6 +32,7 @@ fun AddExpenseScreen(
     navController: NavController,
     id: Int
 ) {
+    Log.i(TAG, "AddExpenseScreen: ${id}")
     val context = LocalContext.current
     var title by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
@@ -126,7 +129,7 @@ fun AddExpenseScreen(
                     onSelect = { id ->
                         category = id
                     },
-                    defaultId = id
+                    defaultId = category
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))

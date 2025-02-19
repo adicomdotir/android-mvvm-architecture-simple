@@ -38,7 +38,8 @@ data class ExpenseCategoryPair(
     val price: Int,
     val description: String?,
     val dateTime: Date,
-    val categoryName: String
+    val categoryName: String,
+    val categoryColor: Int,
 )
 
 @Dao
@@ -46,7 +47,7 @@ interface ExpenseDao {
 //    @Query("SELECT * FROM expenses ORDER BY uid DESC")
 //    fun getExpenses(): Flow<List<Expense>>
 
-    @Query("SELECT *, categories.name AS categoryName FROM expenses INNER JOIN categories on expenses.categoryId == categories.uid ORDER BY uid DESC")
+    @Query("SELECT expenses.*, categories.name AS categoryName, categories.color as categoryColor FROM expenses INNER JOIN categories on expenses.categoryId == categories.uid ORDER BY uid DESC")
     fun getExpenses(): Flow<List<ExpenseCategoryPair>>
 
     @Insert
