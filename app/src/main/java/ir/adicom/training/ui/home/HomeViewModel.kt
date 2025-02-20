@@ -7,9 +7,12 @@ import ir.adicom.training.data.CategoryRepository
 import ir.adicom.training.data.ExpenseRepository
 import ir.adicom.training.data.local.database.Category
 import ir.adicom.training.data.local.database.ExpenseCategoryPair
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.stateIn
+import java.time.YearMonth
+import java.time.ZoneId
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,31 +21,39 @@ class HomeViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
 ) : ViewModel() {
 
-    val uiState: MutableStateFlow<HomeUiState> =
-        MutableStateFlow(HomeUiState.Success(HomeModel(expenses = listOf(), categories = listOf())))
+    val uiState: StateFlow<HomeUiState> = combine(
+        expenseRepository.expenses,
+        categoryRepository.categories
+    ) { expenses, categories ->
+        val balance = expenses.sumOf { it.price }
+        val monthExpense = calculateMonthExpense(expenses)
 
-    init {
-        fetchData()
+        HomeUiState.Success(
+            HomeModel(
+                expenses = expenses,
+                categories = categories,
+                balance = balance,
+                monthExpense = monthExpense
+            )
+        )
     }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = HomeUiState.Loading
+        )
 
-    private fun fetchData() {
-        viewModelScope.launch {
-            uiState.emit(HomeUiState.Loading)
-            val combinedFlow = expenseRepository.expenses.combine(categoryRepository.categories) { ex, cat ->
-                val balance = ex.map { it.price }.reduce { acc, i -> acc + i }
-                HomeModel(
-                    expenses = ex,
-                    categories = cat,
-                    balance = balance,
-                    monthExpense = 0
-                )
+    private fun calculateMonthExpense(expenses: List<ExpenseCategoryPair>): Int {
+        val currentYearMonth = YearMonth.now()
+        val zoneId = ZoneId.systemDefault() // Or specify a specific time zone
+        return expenses
+            .filter {
+                val zonedDateTime = it.dateTime.toInstant().atZone(zoneId)
+                val expenseYearMonth = YearMonth.from(zonedDateTime)
+                expenseYearMonth == currentYearMonth
             }
-            combinedFlow.collect {
-                uiState.emit(HomeUiState.Success(it))
-            }
-        }
+            .sumOf { it.price }
     }
-
 }
 
 sealed interface HomeUiState {
